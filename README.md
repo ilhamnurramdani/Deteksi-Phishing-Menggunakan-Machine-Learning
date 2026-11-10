@@ -1,79 +1,93 @@
-# 🛡️ Malware Detection Using Hybrid Feature Selection and Stacking Ensemble
+# 🔐 Phishing Website Detection Using Machine Learning
 
 <p align="center">
-  <b>Intelligent Malware Classification Using Machine Learning</b>
+  <b>Machine Learning-Based Phishing and Legitimate Website Classification</b>
 </p>
 
 <p align="center">
-  A Machine Learning project that combines Hybrid Feature Selection, Ensemble Learning, and SHAP Explainability to detect malware and distinguish it from benign samples.
+  A Machine Learning project that analyzes website and URL characteristics to identify potential phishing websites and distinguish them from legitimate websites.
 </p>
 
 ---
 
 ## 📌 Project Overview
 
-This project implements a Machine Learning-based approach for detecting malware using the SOMLAP dataset.
+This project implements a Machine Learning-based approach to detect phishing websites using website and URL-related features.
 
-The system classifies samples into two categories: **Benign (0)** and **Malware (1)** by leveraging multiple Machine Learning algorithms and feature selection techniques.
+The system classifies websites into two categories:
 
-The proposed approach combines three feature selection methods: ANOVA F-Test, Mutual Information, and XGBoost Feature Importance. Their normalized scores are integrated into a combined ranking score to identify the most relevant features.
+- **Legitimate (0):** Safe or legitimate websites.
+- **Phishing (1):** Websites identified as phishing.
 
-Furthermore, a Stacking Ensemble model is developed by combining XGBoost, Random Forest, and LightGBM, with Logistic Regression as the final meta-learner.
+The project focuses on analyzing website characteristics, performing data preprocessing, exploring feature relationships, and developing classification models using Logistic Regression.
 
-SHAP (SHapley Additive exPlanations) is also implemented to improve model interpretability by identifying the features that contribute most to classification decisions.
+Two feature selection approaches are also explored: Correlation-based Feature Selection and Random Forest Feature Importance to identify relevant features and evaluate their impact on classification performance.
 
 ## 🎯 Project Objectives
 
-- Develop a Machine Learning model for malware detection.
-- Implement Hybrid Feature Selection to identify relevant features.
-- Combine statistical and model-based feature selection techniques.
-- Improve classification performance using Stacking Ensemble.
-- Compare different Machine Learning algorithms.
-- Apply SHAP for model explainability.
-- Evaluate performance using multiple classification metrics.
+- Develop a Machine Learning model for phishing website detection.
+- Analyze characteristics associated with phishing and legitimate websites.
+- Perform data cleaning and preprocessing.
+- Identify important features using correlation analysis.
+- Apply Random Forest Feature Importance for feature selection.
+- Compare classification performance using different feature configurations.
+- Evaluate models using classification metrics and confusion matrices.
 
 ## ✨ Key Contributions
 
-### 1. Hybrid Feature Selection
+### 1. Exploratory Data Analysis
 
-Combines three feature selection techniques:
+Analyze dataset characteristics, including:
+- Dataset structure and statistical summaries.
+- Missing values and duplicate records.
+- Phishing and legitimate class distribution.
+- Correlation between numerical features.
+- Identification of important website characteristics.
 
-- **ANOVA F-Test:** Measures statistical differences between features and target classes.
-- **Mutual Information:** Evaluates the dependency between features and class labels.
-- **XGBoost Feature Importance:** Measures the contribution of features in an XGBoost model.
+### 2. Feature Selection
 
-Each score is normalized to a range of 0–1 and combined using an average ranking approach.
+Explore two feature selection approaches:
 
-### 2. Stacking Ensemble Learning
+**Correlation-Based Feature Selection**
+- Calculate feature correlations with the target variable.
+- Rank features based on absolute correlation values.
+- Select the top 20 features.
 
-Integrates three base learners:
+**Random Forest Feature Importance**
+- Train a Random Forest classifier to evaluate feature importance.
+- Rank features based on their importance scores.
+- Select the top 20 most influential features.
 
-- XGBoost Classifier
-- Random Forest Classifier
-- LightGBM Classifier
+### 3. Logistic Regression Classification
 
-Logistic Regression is used as the meta-learner to combine predictions from the base models.
+Use Logistic Regression as the primary classification algorithm.
 
-### 3. SHAP Explainability
+The model is evaluated using three configurations:
+- Logistic Regression with all numerical features.
+- Logistic Regression with the top 20 correlation-based features.
+- Logistic Regression with the top 20 Random Forest-selected features.
 
-Uses SHAP to analyze feature importance and understand the contribution of selected features to malware classification.
+RobustScaler is applied to scale numerical features before model training.
 
 ## 📊 Dataset Information
 
 | Information | Description |
 |---|---|
-| Dataset | SOMLAP |
-| Total Samples | 37,041 |
+| Dataset | Phishing Website Dataset |
+| File | `dataset_phishing.csv` |
+| Total Samples | 11,430 |
+| Total Columns | 89 |
+| Numerical Features | 87 |
 | Number of Classes | 2 |
-| Benign Samples | 18,632 (50.3%) |
-| Malware Samples | 18,409 (49.7%) |
-| Target Variable | `class` |
-| Benign Label | 0 |
-| Malware Label | 1 |
+| Legitimate Samples | 5,715 (50%) |
+| Phishing Samples | 5,715 (50%) |
+| Target Variable | `status` |
+| Legitimate Label | 0 |
+| Phishing Label | 1 |
 
 ### Class Distribution
 
-The dataset contains two relatively balanced classes, reducing the need for additional class balancing techniques in the initial experiment.
+The dataset contains an equal distribution of legitimate and phishing samples, with each class representing 50% of the total observations.
 
 ## 🛠️ Technology Stack
 
@@ -83,253 +97,209 @@ The dataset contains two relatively balanced classes, reducing the need for addi
 | Pandas | Data manipulation |
 | NumPy | Numerical computation |
 | Scikit-learn | Machine Learning and evaluation |
-| XGBoost | Gradient boosting classifier |
-| LightGBM | Gradient boosting framework |
-| SHAP | Model explainability |
+| Logistic Regression | Classification algorithm |
+| Random Forest | Feature importance |
+| RobustScaler | Feature scaling |
 | Matplotlib | Data visualization |
 | Seaborn | Statistical visualization |
+| Jupyter Notebook | Experimentation and analysis |
 
 ## 🔄 Project Workflow
 
-The project consists of eight main stages:
+The project consists of seven main stages:
 
 **1. Data Loading**
-- Load SOMLAP dataset.
-- Remove duplicate records.
+- Load the phishing website dataset.
+- Inspect dataset structure and dimensions.
+- Identify numerical and categorical columns.
+
+**2. Exploratory Data Analysis**
+- Analyze class distribution.
+- Check missing values and duplicate records.
+- Examine descriptive statistics.
+- Explore feature correlations.
+
+**3. Data Preprocessing**
+- Convert target labels into numerical values.
+- Identify invalid negative values in domain-related features.
+- Replace invalid values using median imputation.
 - Separate features and target variables.
 
-**2. Train-Test Splitting**
-- Split dataset into 80% training and 20% testing.
+**4. Train-Test Splitting**
+- Split data into 80% training and 20% testing.
 - Apply stratified sampling to maintain class distribution.
 
-**3. Variance Threshold**
-- Remove features with zero variance.
-- Fit the selector using training data only.
+**5. Feature Selection**
+- Apply correlation-based feature selection.
+- Apply Random Forest Feature Importance.
+- Select the top 20 features for each approach.
 
-**4. Hybrid Feature Selection**
-- Calculate ANOVA F-Test scores.
-- Calculate Mutual Information scores.
-- Calculate XGBoost feature importance.
-- Normalize and combine all scores.
-- Select the top 40 features.
+**6. Model Training**
+- Logistic Regression using all numerical features.
+- Logistic Regression using correlation-selected features.
+- Logistic Regression using Random Forest-selected features.
 
-**5. Model Training**
-- XGBoost + ANOVA (Baseline).
-- XGBoost + Hybrid Feature Selection.
-- Random Forest + Hybrid Feature Selection.
-- LightGBM + Hybrid Feature Selection.
-- Stacking Ensemble + Hybrid Feature Selection.
-
-**6. Cross-Validation**
-- Apply Stratified 5-Fold Cross-Validation.
-- Evaluate the proposed pipeline using training data.
-- Integrate preprocessing and feature selection within the pipeline.
-
-**7. Model Explainability**
-- Apply SHAP TreeExplainer.
-- Analyze feature contributions.
-- Identify the most influential features.
-
-**8. Model Evaluation and Visualization**
+**7. Model Evaluation**
 - Accuracy
 - Precision
 - Recall
 - F1-Score
-- ROC-AUC
 - Confusion Matrix
 
 ## 🧠 Model Architecture
 
-### Hybrid Feature Selection
-
-The proposed feature selection method integrates three independent scoring approaches.
+### Classification Workflow
 
 ```text
-          Original Features
-                  |
-          ┌───────┼────────┐
-          |       |        |
-        ANOVA     MI     XGBoost
-          |       |        |
-          v       v        v
-       Normalize All Scores
+       Phishing Website Dataset
                   |
                   v
-          Combined Ranking
+       Exploratory Data Analysis
                   |
                   v
-           Top 40 Features
-```
-
-### Stacking Ensemble
-
-```text
-          Selected Features
-                  |
-        ┌─────────┼─────────┐
-        |         |         |
-      XGBoost     RF       LightGBM
-        |         |         |
-        └─────────┼─────────┘
-                  |
-             Meta-Learner
-           Logistic Regression
+         Data Preprocessing
                   |
                   v
-          Classification Output
-             Benign / Malware
+          Train-Test Split
+                  |
+                  v
+         Feature Selection
+          /             \
+         v               v
+    Correlation      Random Forest
+     Analysis        Importance
+         |               |
+         v               v
+     Top 20           Top 20
+     Features         Features
+         |               |
+         v               v
+    Logistic          Logistic
+    Regression        Regression
+         \               /
+          \             /
+           v           v
+          Model Evaluation
+                  |
+                  v
+       Legitimate / Phishing
 ```
 
 ## 📈 Model Performance Comparison
 
-Five model configurations were evaluated:
+Three classification configurations were evaluated.
 
-| Model | F1-Score | AUC |
-|---|---:|---:|
-| XGBoost + ANOVA (Baseline) | 99.172% | 0.999517 |
-| XGBoost + Hybrid FS | **99.511%** | 0.999897 |
-| Random Forest + Hybrid FS | 99.416% | 0.999901 |
-| LightGBM + Hybrid FS | 99.430% | 0.999879 |
-| Stacking + Hybrid FS (Proposed) | 99.443% | **0.999918** |
+| Model Configuration | Accuracy |
+|---|---:|
+| Logistic Regression (All Features) | **93.35%** |
+| Logistic Regression (Correlation Top 20) | 92.65% |
+| Logistic Regression (Random Forest Top 20) | 91.82% |
 
-### Proposed Model Evaluation
+The Logistic Regression model using all numerical features achieved the highest accuracy of 93.35% among the three evaluated configurations.
 
-The Stacking Ensemble combined with Hybrid Feature Selection achieved:
+### Classification Metrics
+
+The following results were obtained from the Logistic Regression model using all numerical features:
 
 | Metric | Score |
 |---|---:|
-| Accuracy | 99.45% |
-| Precision | 99.48% |
-| Recall | 99.40% |
-| F1-Score | 99.44% |
-| ROC-AUC | 0.999918 |
+| Accuracy | 93.35% |
+| Precision | 93% |
+| Recall | 93% |
+| F1-Score | 93% |
 
-The proposed model achieved the highest ROC-AUC among the evaluated configurations, indicating excellent discrimination between benign and malware samples.
-
-Meanwhile, XGBoost with Hybrid Feature Selection achieved the highest F1-Score.
+*Note: Precision, Recall, and F1-Score are rounded values from the classification report.*
 
 ## 📉 Confusion Matrix
 
-The proposed Stacking Ensemble produced the following classification results:
+The Logistic Regression model using all numerical features produced the following results:
 
-| Actual / Predicted | Benign | Malware |
+| Actual / Predicted | Legitimate | Phishing |
 |---|---:|---:|
-| Benign | 3,708 | 19 |
-| Malware | 22 | 3,660 |
+| Legitimate | 1,040 | 103 |
+| Phishing | 65 | 1,078 |
 
-The model correctly classified 7,368 out of 7,409 test samples, with only 41 classification errors.
+The model correctly classified 2,118 out of 2,286 testing samples.
+
+For comparison, the Random Forest-based feature selection experiment produced:
+
+| Actual / Predicted | Legitimate | Phishing |
+|---|---:|---:|
+| Legitimate | 1,035 | 108 |
+| Phishing | 79 | 1,064 |
 
 ## 📊 Visualizations
 
-The project generates nine visualizations to support model analysis and evaluation.
+The project includes visualizations to support the analysis and evaluation process:
 
-| Visualization | Description |
-|---|---|
-| Class Distribution | Distribution of benign and malware samples |
-| Hybrid FS Scores | Comparison of three feature selection scores |
-| Combined Ranking | Top 20 features based on combined scores |
-| F1-Score Comparison | F1-Score comparison across models |
-| Evaluation Metrics | Comparison of all evaluation metrics |
-| ROC Curves | ROC curve comparison |
-| Confusion Matrix | Classification performance of proposed model |
-| SHAP Feature Importance | Top 20 influential features |
-| Metrics Heatmap | Heatmap of evaluation metrics |
+1. Phishing and Legitimate Class Distribution.
+2. Top 20 Features Based on Correlation.
+3. Random Forest Feature Importance.
+4. Feature Correlation Heatmap.
+5. Logistic Regression Confusion Matrix.
+6. Confusion Matrix with Selected Features.
 
-### 1. Dataset Class Distribution
-
-![Class Distribution](visualisasi/01_distribusi_kelas.png)
-
-### 2. Hybrid Feature Selection Scores
-
-![Hybrid FS Scores](visualisasi/02_hybrid_fs_skor.png)
-
-### 3. Combined Feature Ranking
-
-![Feature Ranking](visualisasi/03_hybrid_fs_ranking.png)
-
-### 4. F1-Score Comparison
-
-![F1 Comparison](visualisasi/04_perbandingan_f1.png)
-
-### 5. Evaluation Metrics Comparison
-
-![Metrics Comparison](visualisasi/05_perbandingan_semua_metrik.png)
-
-### 6. ROC Curves
-
-![ROC Curves](visualisasi/06_roc_curves.png)
-
-### 7. Confusion Matrix
-
-![Confusion Matrix](visualisasi/07_confusion_matrix.png)
-
-### 8. SHAP Feature Importance
-
-![SHAP](visualisasi/08_shap_feature_importance.png)
-
-### 9. Evaluation Metrics Heatmap
-
-![Metrics Heatmap](visualisasi/09_metrics_heatmap.png)
+These visualizations help illustrate dataset characteristics, feature relevance, and model classification results.
 
 ## ⚙️ Installation & Setup
 
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/ilhamnurramdani/Malware-Detection-Hybrid-FS-Stacking.git
+git clone https://github.com/ilhamnurramdani/REPOSITORY-NAME.git
 ```
 
 ### 2. Navigate to Project Directory
 
 ```bash
-cd Malware-Detection-Hybrid-FS-Stacking
+cd REPOSITORY-NAME
 ```
 
 ### 3. Create Virtual Environment
 
 ```bash
-python -m venv .env
+python -m venv .venv
 ```
 
 Activate on Windows:
 
 ```bash
-.env\Scripts\activate
+.venv\Scripts\activate
 ```
 
 ### 4. Install Dependencies
 
 ```bash
-pip install -r requirements.txt
+pip install pandas numpy matplotlib seaborn scikit-learn scipy jupyter
 ```
 
 ### 5. Prepare Dataset
 
-Place the SOMLAP dataset in the following directory:
+Place the dataset in the project directory:
 
 ```text
-Dataset/
-└── SOMLAP DATASET.csv
+Project/
+├── app.ipynb
+├── dataset_phishing.csv
+└── README.md
 ```
-
-The dataset must contain a target column named `class`.
 
 ### 6. Run the Project
 
 ```bash
-python app4.py
+jupyter notebook app.ipynb
 ```
 
-The script will execute the complete pipeline, train the models, evaluate their performance, and generate nine visualization files.
+Run the notebook cells sequentially to perform data exploration, preprocessing, feature selection, model training, and evaluation.
 
 ## 🔮 Future Improvements
 
-- Hyperparameter optimization using Optuna or GridSearchCV.
-- Testing the proposed method on additional malware datasets.
-- Evaluating generalization using external test datasets.
-- Developing a web-based malware detection application.
-- Improving explainability through additional SHAP visualizations.
-- Evaluating model performance under different feature selection configurations.
+- Experiment with additional classification algorithms such as Random Forest, XGBoost, and LightGBM.
+- Explore advanced feature selection techniques.
+- Apply hyperparameter optimization.
+- Evaluate model generalization using external datasets.
+- Develop a web-based phishing detection application.
+- Improve model interpretability using SHAP.
 
 ## 👨‍💻 Author
 
@@ -343,15 +313,15 @@ Universitas Budi Luhur
 - Machine Learning
 - Data Mining
 - Cybersecurity
-- Malware Detection
-- Explainable AI
+- Phishing Detection
+- Data Analytics
 
 GitHub: [@ilhamnurramdani](https://github.com/ilhamnurramdani)
 
 ---
 
 <p align="center">
-  <b>Developed with Python, Machine Learning & Explainable AI</b>
+  <b>Developed with Python & Machine Learning</b>
   <br>
   ⭐ Feel free to explore this project and give it a star!
 </p>
